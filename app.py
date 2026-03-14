@@ -29,10 +29,6 @@ def create_trip():
     with get_db() as conn:
         cur = conn.cursor()
         cur.execute('INSERT INTO trips (name) VALUES (?)', (name,))
-        trip_id = cur.lastrowid
-        # Basic defaults
-        for item in ['Passport', 'Phone Charger', 'Socks']:
-            conn.execute('INSERT INTO items (trip_id, name, category) VALUES (?, ?, ?)', (trip_id, item, 'Essentials'))
     return redirect(url_for('index'))
 
 @app.route('/trip/<int:trip_id>')
