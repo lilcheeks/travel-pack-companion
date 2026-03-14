@@ -55,6 +55,17 @@ def delete_trip(trip_id):
         conn.execute('DELETE FROM trips WHERE id = ?', (trip_id,))
     return redirect(url_for('index'))
 
+@app.route('/delete_item/<int:item_id>', methods=['POST'])
+def delete_item(item_id):
+    with get_db() as conn:
+        # Get the trip_id before deleting so we can redirect back to the right page
+        item = conn.execute('SELECT trip_id FROM items WHERE id = ?', (item_id,)).fetchone()
+        if item:
+            trip_id = item['trip_id']
+            conn.execute('DELETE FROM items WHERE id = ?', (item_id,))
+            return redirect(url_for('view_trip', trip_id=trip_id))
+    return redirect(url_for('index'))
+
 @app.route('/toggle/<int:item_id>', methods=['POST'])
 def toggle_item(item_id):
     with get_db() as conn:
