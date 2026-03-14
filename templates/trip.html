@@ -34,13 +34,19 @@
                     <h2 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-6 ml-1">{{ item.category }}</h2>
                     {% set current_cat.val = item.category %}
                 {% endif %}
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm flex items-center">
-                    <input type="checkbox" id="item-{{ item.id }}" class="w-6 h-6 rounded border-gray-300 dark:bg-gray-700" 
-                        {% if item.packed %}checked{% endif %} onclick="toggleItem({{ item.id }})">
-                    <label for="item-{{ item.id }}" class="ml-4 text-lg flex-1">
-                        {{ item.name }} <span class="text-gray-400 text-sm ml-1">x{{ item.quantity }}</span>
-                    </label>
-                </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm flex items-center justify-between">
+            <div class="flex items-center flex-1">
+                <input type="checkbox" id="item-{{ item.id }}" class="w-6 h-6 rounded border-gray-300 dark:bg-gray-700" 
+                    {% if item.packed %}checked{% endif %} onclick="toggleItem({{ item.id }})">
+                <label for="item-{{ item.id }}" class="ml-4 text-lg">
+                    {{ item.name }} <span class="text-gray-400 text-sm ml-1">x{{ item.quantity }}</span>
+                </label>
+            </div>
+
+    <form action="/delete_item/{{ item.id }}" method="POST" onsubmit="return confirm('Remove this item?')">
+        <button type="submit" class="text-gray-400 hover:text-red-500 px-2 text-xl font-bold">&times;</button>
+    </form>
+</div>
             {% endfor %}
         </div>
     </div>
