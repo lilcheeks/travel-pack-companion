@@ -1,0 +1,9 @@
+services:
+  packing-app:
+    build: .
+    container_name: packing_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data  # Maps the DB file to your NAS storage
+    restart: unless-stopped
