@@ -27,28 +27,42 @@
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Add to List</button>
         </form>
 
-        <div class="space-y-3">
-            {% set current_cat = namespace(val='') %}
-            {% for item in items %}
-                {% if item.category != current_cat.val %}
-                    <h2 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-6 ml-1">{{ item.category }}</h2>
-                    {% set current_cat.val = item.category %}
-                {% endif %}
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm flex items-center justify-between">
-            <div class="flex items-center flex-1">
-                <input type="checkbox" id="item-{{ item.id }}" class="w-6 h-6 rounded border-gray-300 dark:bg-gray-700" 
-                    {% if item.packed %}checked{% endif %} onclick="toggleItem({{ item.id }})">
-                <label for="item-{{ item.id }}" class="ml-4 text-lg">
-                    {{ item.name }} <span class="text-gray-400 text-sm ml-1">x{{ item.quantity }}</span>
-                </label>
-            </div>
+<div class="space-y-6">
+    {% set current_cat = namespace(val='') %}
+    {% for item in items %}
+        {% if item.category != current_cat.val %}
+            {% if not loop.first %}
+                    </div> </details>
+            </div> {% endif %}
+            
+            <div class="category-group">
+                <details open class="group">
+                    <summary class="flex items-center cursor-pointer list-none py-2 outline-none">
+                        <span class="transition-transform group-open:rotate-90 mr-2 text-blue-500 text-xs">▶</span>
+                        <h2 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{{ item.category }}</h2>
+                    </summary>
+                    <div class="space-y-3 mt-2">
+            {% set current_cat.val = item.category %}
+        {% endif %}
 
-    <form action="/delete_item/{{ item.id }}" method="POST" onsubmit="return confirm('Remove this item?')">
-        <button type="submit" class="text-gray-400 hover:text-red-500 px-2 text-xl font-bold">&times;</button>
-    </form>
-</div>
-            {% endfor %}
-        </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm flex items-center justify-between border border-transparent dark:border-gray-700">
+                <div class="flex items-center flex-1">
+                    <input type="checkbox" id="item-{{ item.id }}" class="w-6 h-6 rounded border-gray-300 dark:bg-gray-700" 
+                        {% if item.packed %}checked{% endif %} onclick="toggleItem({{ item.id }})">
+                    <label for="item-{{ item.id }}" class="ml-4 text-lg">
+                        {{ item.name }} <span class="text-gray-400 text-sm ml-1">x{{ item.quantity }}</span>
+                    </label>
+                </div>
+                <form action="/delete_item/{{ item.id }}" method="POST" onsubmit="return confirm('Remove this item?')">
+                    <button type="submit" class="text-gray-400 hover:text-red-500 px-2 text-2xl leading-none">&times;</button>
+                </form>
+            </div>
+    
+            {% if loop.last %}
+                        </div> </details>
+                </div> {% endif %}
+        {% endfor %}
+    </div>
     </div>
 
     <script>
