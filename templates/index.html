@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Packer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .item-checked { text-decoration: line-through; opacity: 0.5; }
+        input[type="checkbox"] { transform: scale(1.5); }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="max-w-md mx-auto p-4">
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">My Trips</h1>
+        </header>
+
+        <section class="bg-white p-4 rounded-lg shadow mb-6">
+            <h2 class="text-lg font-semibold mb-3">Start New Trip</h2>
+            <form action="/create_trip" method="POST" class="space-y-3">
+                <input type="text" name="name" placeholder="e.g., Vacation 2026" required 
+                    class="w-full p-2 border rounded border-gray-300">
+                <select name="template" class="w-full p-2 border rounded border-gray-300 bg-white">
+                    <option value="General">General Template</option>
+                    <option value="Cottage">Cottage/Seasonal</option>
+                </select>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">
+                    + Create Trip
+                </button>
+            </form>
+        </section>
+
+        <section class="space-y-4">
+            {% for trip in trips %}
+            <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-medium">{{ trip.name }}</h3>
+                    <p class="text-sm text-gray-500">Created: {{ trip.date if trip.date else 'Recently' }}</p>
+                </div>
+                <div class="flex space-x-2">
+                    <a href="/trip/{{ trip.id }}" class="bg-green-500 text-white px-4 py-2 rounded text-sm font-bold">Pack</a>
+                    
+                    <form action="/clone_trip/{{ trip.id }}" method="POST" onsubmit="return confirm('Reuse this list for a new trip?')">
+                        <input type="hidden" name="new_name" value="{{ trip.name }} (Copy)">
+                        <button type="submit" class="bg-gray-200 text-gray-700 px-4 py-2 rounded text-sm font-bold">Reuse</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+</body>
+</html>
