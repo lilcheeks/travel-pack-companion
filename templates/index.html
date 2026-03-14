@@ -45,6 +45,10 @@
                         <input type="hidden" name="new_name" value="{{ trip.name }} (Copy)">
                         <button type="submit" class="bg-gray-200 text-gray-700 px-4 py-2 rounded text-sm font-bold">Reuse</button>
                     </form>
+                    
+                    <form action="/delete_trip/{{ trip.id }}" method="POST" onsubmit="return confirm('Delete this trip forever?')">
+                    <button type="submit" class="bg-red-100 text-red-600 px-3 py-2 rounded text-sm font-bold">Delete</button>
+                    </form>
                 </div>
             </div>
             {% endfor %}
