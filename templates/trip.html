@@ -6,30 +6,45 @@
     <title>Packing: {{ trip.name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-    <div class="max-w-md mx-auto p-4">
+<body class="bg-gray-100 p-4">
+    <div class="max-w-md mx-auto">
         <header class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">{{ trip.name }}</h1>
             <a href="/" class="text-blue-600 font-bold">← Back</a>
         </header>
 
-        <div class="space-y-2">
+        <form action="/add_item/{{ trip.id }}" method="POST" class="bg-white p-4 rounded-lg shadow mb-6 flex flex-wrap gap-2">
+            <input type="text" name="name" placeholder="Item name" required class="flex-1 p-2 border rounded">
+            <input type="number" name="quantity" value="1" class="w-16 p-2 border rounded text-center">
+            <select name="category" class="w-full mt-2 p-2 border rounded bg-white">
+                <option value="Clothing">Clothing</option>
+                <option value="Toiletries">Toiletries</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Documents">Documents</option>
+            </select>
+            <button type="submit" class="w-full mt-2 bg-blue-500 text-white py-2 rounded font-bold">+ Add</button>
+        </form>
+
+        {% set current_cat = namespace(val='') %}
+        <div class="space-y-4">
             {% for item in items %}
-            <div class="bg-white p-4 rounded-lg shadow flex items-center">
-                <input type="checkbox" id="item-{{ item.id }}" 
-                    class="w-6 h-6 mr-4" 
-                    {% if item.packed %}checked{% endif %}
-                    onclick="toggleItem({{ item.id }})">
-                <label for="item-{{ item.id }}" class="text-lg flex-1">{{ item.name }}</label>
-            </div>
+                {% if item.category != current_cat.val %}
+                    <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mt-6">{{ item.category }}</h2>
+                    {% set current_cat.val = item.category %}
+                {% endif %}
+                <div class="bg-white p-4 rounded-lg shadow flex items-center">
+                    <input type="checkbox" id="item-{{ item.id }}" class="w-6 h-6 mr-4" 
+                        {% if item.packed %}checked{% endif %} onclick="toggleItem({{ item.id }})">
+                    <label for="item-{{ item.id }}" class="text-lg flex-1">
+                        {{ item.name }} <span class="text-gray-400 text-sm ml-2">x{{ item.quantity }}</span>
+                    </label>
+                </div>
             {% endfor %}
         </div>
     </div>
 
     <script>
-        function toggleItem(id) {
-            fetch(`/toggle/${id}`, { method: 'POST' });
-        }
+        function toggleItem(id) { fetch(`/toggle/${id}`, { method: 'POST' }); }
     </script>
 </body>
 </html>
