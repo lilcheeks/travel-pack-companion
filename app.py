@@ -74,8 +74,9 @@ def toggle_item(item_id):
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
-    # This tells Flask to look in the 'static' folder for the file
-    return send_from_directory('static', filename)
+    root_dir = os.path.dirname(os.getcwd())
+    # This ensures it finds the 'static' folder in your docker working directory
+    return send_from_directory(os.path.join(app.root_path, 'static'), filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
