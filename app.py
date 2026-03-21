@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 import sqlite3
 import os
 
@@ -71,6 +71,11 @@ def toggle_item(item_id):
     with get_db() as conn:
         conn.execute('UPDATE items SET packed = 1 - packed WHERE id = ?', (item_id,))
     return jsonify(success=True)
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    # This tells Flask to look in the 'static' folder for the file
+    return send_from_directory('static', filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
