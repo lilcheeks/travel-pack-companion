@@ -2,12 +2,13 @@
   "name": "Travel Pack Companion",
   "short_name": "Packer",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/761/761488.png",
+      "src": "/static/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
