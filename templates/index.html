@@ -32,6 +32,11 @@
                 </div>
                 <div class="flex gap-2">
                     <a href="/trip/{{ trip.id }}" class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold">Pack</a>
+                    <form action="/clone_trip/{{ trip.id }}" method="POST" class="inline" onsubmit="return confirm('Clone this trip and all its items?')">
+                        <button type="submit" class="text-blue-500 hover:text-blue-700 font-medium text-sm px-2 py-1 border border-blue-500 rounded-md transition-colors">
+                            📋 Clone
+                        </button>
+                    </form>
                     <form action="/delete_trip/{{ trip.id }}" method="POST" onsubmit="return confirm('Delete trip?')">
                         <button type="submit" class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg font-bold text-sm">Delete</button>
                     </form>

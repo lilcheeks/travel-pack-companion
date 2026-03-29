@@ -78,5 +78,39 @@ def serve_static(filename):
     # This ensures it finds the 'static' folder in your docker working directory
     return send_from_directory(os.path.join(app.root_path, 'static'), filename)
 
+@app.route('/clone_trip/<int:trip_id>', methods=['POST'])
+def clone_trip(trip_id):
+    # Use your app's built-in get_db()!
+    with get_db() as conn:
+        # 1. Get the original trip's details
+        original_trip = conn.execute("SELECT name FROM trips WHERE id = ?", (trip_id,)).fetchone()
+        
+        if not original_trip:
+            return "Trip not found", 404
+            
+        # SQLite Row objects allow us to access data by name
+        new_name = f"{original_trip['name']} (Copy)"
+        
+        # 2. Create the new trip
+        cur = conn.cursor()
+        cur.execute("INSERT INTO trips (name) VALUES (?)", (new_name,))
+        new_trip_id = cur.lastrowid
+        
+        # 3. Get all items from the original trip
+        items_to_clone = conn.execute(
+            "SELECT name, category, quantity FROM items WHERE trip_id = ?", 
+            (trip_id,)
+        ).fetchall()
+        
+        # 4. Insert those items assigned to the NEW trip
+        for item in items_to_clone:
+            conn.execute(
+                "INSERT INTO items (trip_id, name, category, quantity, packed) VALUES (?, ?, ?, ?, 0)",
+                (new_trip_id, item['name'], item['category'], item['quantity'])
+            )
+            
+    # The "with" block automatically handles committing the data
+    return redirect(url_for('index'))
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
