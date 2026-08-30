@@ -3,47 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Packer</title>
+    <title>My Trips</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="manifest" href="/static/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 transition-colors duration-200">
-    <div class="max-w-md mx-auto">
+    <div class="max-w-md mx-auto pb-24">
         <header class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold">My Trips</h1>
+            <h1 class="text-2xl font-bold">My Trips</h1>
         </header>
 
         <form action="/create_trip" method="POST" class="mb-8">
             <div class="flex gap-2">
-                <input type="text" name="name" placeholder="Where to?" required 
+                <input type="text" name="name" placeholder="Where to?" required
                     class="flex-1 p-3 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold">Add</button>
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add
+                </button>
             </div>
         </form>
 
+        {% if trips %}
         <div class="space-y-4">
             {% for trip in trips %}
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm flex justify-between items-center border border-transparent dark:border-gray-700">
-                <div>
-                    <h3 class="text-xl font-semibold">{{ trip.name }}</h3>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm flex items-center justify-between border border-transparent dark:border-gray-700">
+                <div class="min-w-0">
+                    <h3 class="text-xl font-semibold truncate">{{ trip.name }}</h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Created: {{ trip.date }}</p>
                 </div>
-                <div class="flex gap-2">
-                    <a href="/trip/{{ trip.id }}" class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold">Pack</a>
-                    <form action="/clone_trip/{{ trip.id }}" method="POST" class="inline" onsubmit="return confirm('Clone this trip and all its items?')">
-                        <button type="submit" class="text-blue-500 hover:text-blue-700 font-medium text-sm px-2 py-1 border border-blue-500 rounded-md transition-colors">
-                            📋 Clone
+                <div class="flex items-center gap-1 shrink-0">
+                    <a href="/trip/{{ trip.id }}"
+                        class="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-2 rounded-lg font-bold transition-colors">
+                        Pack
+                    </a>
+                    <form action="/clone_trip/{{ trip.id }}" method="POST" class="inline"
+                        onsubmit="return confirm('Clone this trip and all its items?')">
+                        <button type="submit" title="Clone trip"
+                            class="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
                         </button>
                     </form>
                     <form action="/delete_trip/{{ trip.id }}" method="POST" onsubmit="return confirm('Delete trip?')">
-                        <button type="submit" class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg font-bold text-sm">Delete</button>
+                        <button type="submit" title="Delete trip"
+                            class="p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
                     </form>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="text-center py-16 px-6">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+            </svg>
+            <h2 class="text-lg font-semibold mb-1">No trips yet</h2>
+            <p class="text-gray-500 dark:text-gray-400">Add your first destination above to get started.</p>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>
